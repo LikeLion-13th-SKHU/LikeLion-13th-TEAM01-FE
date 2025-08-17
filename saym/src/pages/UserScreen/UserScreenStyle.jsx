@@ -105,5 +105,5 @@ export const BookmarkIconWrapper = styled.div`
    top: 0;
    right: 0;
    cursor: pointer;
-   color: #555;
+   color: #4daeff;
 `;

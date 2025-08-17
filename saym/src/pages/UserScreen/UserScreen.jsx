@@ -10,7 +10,7 @@ import * as S from './UserScreenStyle';
 import Header from '../../components/Header/Header_ customer/Header_ customer';
 import React, { useState } from 'react';
 import FilterModal from './Filter/FilterModal';
-
+import { useNavigate } from 'react-router-dom';
 const dummyEvents = [
    { id: 1, title: '행사 1', date: '2025/07/31~2025/09/25', imageUrl: '' },
    { id: 2, title: '행사 2', date: '2025/08/15~2025/08/20', imageUrl: '' },
@@ -22,7 +22,7 @@ const dummyEvents = [
 const UserScreen = () => {
    // useState를 사용해 북마크된 이벤트의 id를 배열로 관리합니다.
    const [bookmarkedEvents, setBookmarkedEvents] = useState([]);
-
+   const navigate = useNavigate();
    // 👇 2. 필터 모달의 열림/닫힘 상태를 관리할 useState를 추가합니다.
    const [isFilterOpen, setIsFilterOpen] = useState(false);
    // 👇 3. 필터 모달을 여는 함수
@@ -34,7 +34,6 @@ const UserScreen = () => {
    const closeFilterModal = () => {
       setIsFilterOpen(false);
    };
-
    // 북마크 아이콘 클릭 시 호출될 함수
    const handleBookmarkClick = (eventId) => {
       // 이미 북마크된 이벤트인지 확인합니다.
@@ -46,6 +45,7 @@ const UserScreen = () => {
          setBookmarkedEvents([...bookmarkedEvents, eventId]);
       }
    };
+
    return (
       <S.PageContainer>
          <Header />
@@ -67,7 +67,10 @@ const UserScreen = () => {
                const isBookmarked = bookmarkedEvents.includes(event.id);
 
                return (
-                  <S.EventCardContainer key={event.id}>
+                  <S.EventCardContainer
+                     key={event.id}
+                     onClick={() => navigate(`/event/${event.id}`)}
+                  >
                      <S.EventImage />
                      <S.EventInfo>
                         <S.EventTitle>{event.title}</S.EventTitle>

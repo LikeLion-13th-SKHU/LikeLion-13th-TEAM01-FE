@@ -10,7 +10,7 @@ import AiResult from '../pages/AiResult/AiResult';
 import RegisterStorePage from '../pages/StorePage/RegisterStorePage';
 import EditStorePage from '../pages/StorePage/EditStorePage';
 import KakaoRedirectHandler from '../pages/Login/KakaoRedirectHandler';
-
+import EventDetail from '../pages/EventDetail/EventDetail';
 export const router = createBrowserRouter([
    {
       path: '/',
@@ -21,7 +21,7 @@ export const router = createBrowserRouter([
          { path: '/selectuser', element: <SelectUser /> },
          { path: '/userscreen', element: <UserScreen /> },
          { path: '/auth', element: <Auth /> },
-         { path: '/organizer', element: <Organizer /> },
+         { path: '/event/:id', element: <EventDetail /> },
          { path: '/chatlog', element: <Chatlog /> },
          { path: '/airesult/:id', element: <AiResult /> },
          { path: '/store/register', element: <RegisterStorePage /> },
