@@ -1,23 +1,25 @@
 import styled from 'styled-components';
 
-// 전체 페이지의 기본 틀을 잡습니다.
+// 전체 페이지
 export const PageContainer = styled.div`
    width: 100%;
-   height: 100dvh;
+   height: 100vh; /* 모바일 브라우저 호환성 ↑ */
    display: flex;
    flex-direction: column;
    box-sizing: border-box;
    position: relative;
    padding-top: 75px;
+   overflow: hidden; /* 전체 페이지 스크롤 방지, 내부 컨텐츠에서 처리 */
 `;
 
-// 헤더를 제외한 실제 콘텐츠 영역을 감싸며, 여백을 담당합니다.
+// 콘텐츠 스크롤 영역
 export const ContentWrapper = styled.div`
-   flex-grow: 1;
+   flex: 1;
    display: flex;
    flex-direction: column;
-   overflow-y: auto; /* 세로 스크롤은 여기서 담당 */
-   padding: 25px; /* 고정 헤더 높이만큼 추가 여백 */
+   overflow-y: auto;
+   padding: 25px;
+   padding-bottom: 40px;
 `;
 
 // --- 상단 (이미지, 제목, 날짜) ---
@@ -43,10 +45,9 @@ export const EventInfoWrapper = styled.div`
 
 export const TitleWrapper = styled.div`
    display: flex;
-   /* justify-content: space-between; */ /* <- 이 줄을 삭제하거나 주석 처리하세요 */
    align-items: center;
    margin-bottom: 8px;
-   gap: 8px; /* <- 제목과 아이콘 사이의 간격을 위해 이 줄을 추가하세요 */
+   gap: 8px;
 `;
 
 export const EventTitle = styled.h1`
@@ -54,11 +55,11 @@ export const EventTitle = styled.h1`
    font-weight: bold;
    margin: 0;
 `;
-// 북마크 아이콘을 위한 새로운 스타일 컴포넌트
+
 export const BookmarkWrapper = styled.div`
    cursor: pointer;
-   display: flex; // 아이콘의 정렬을 위해 추가
-   align-items: center; // 아이콘의 정렬을 위해 추가
+   display: flex;
+   align-items: center;
 `;
 
 export const EventDate = styled.p`
@@ -68,44 +69,67 @@ export const EventDate = styled.p`
    padding-top: 40px;
 `;
 
-// --- 중간 (자세한 내용, 길찾기) ---
+// --- 중간 ---
 export const ContentSection = styled.div`
-   flex-grow: 1;
-   display: flex;
-   flex-direction: column;
-   justify-content: space-between;
    padding: 16px 0;
-   color: #000000;
-   font-size: 16px;
    line-height: 1.6;
-   min-height: 150px;
 `;
 
 export const DescriptionText = styled.p`
-   margin: 10px;
-   text-align: center;
-`;
-
-export const FindRoute = styled.p`
-   background: none;
-   border: none;
-   color: #4daeff;
+   margin: 0 0 24px 0;
    font-size: 16px;
-   font-weight: 500;
-   padding: 0;
-   text-align: center;
-   margin-top: 16px;
+   white-space: pre-wrap;
+   color: #333;
 `;
 
-// --- 하단 (근처 맛집) ---
+// 주소 정보 박스
+export const AddressInfoBox = styled.div`
+   background-color: #f9f9f9;
+   border-radius: 8px;
+   padding: 20px;
+   margin-top: 16px;
+   font-size: 15px;
+   line-height: 1.7;
+   color: #555;
+
+   p {
+      margin: 0 0 8px 0;
+      padding-left: 5px;
+   }
+
+   strong {
+      font-weight: 600;
+      color: #333;
+      margin-right: 8px;
+   }
+`;
+
+export const AddressTitle = styled.h4`
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   font-size: 16px;
+   font-weight: 600;
+   color: #333;
+   margin: 0 0 16px 0;
+`;
+
 export const Divider = styled.hr`
    border: none;
-   border-top: 1px solid #4daeff;
-   margin: 24px 0;
+   border-top: 1px solid #e0e0e0;
+   margin: 0 25px;
+`;
+
+// --- 하단 근처 맛집 ---
+export const FixedBottomWrapper = styled.div`
+   flex-shrink: 0;
+   background-color: #ffffff;
+   box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+   z-index: 10;
 `;
 
 export const NearbySection = styled.div`
-   margin-bottom: 15px;
+   padding: 24px 25px;
 `;
 
 export const SectionTitle = styled.h3`
@@ -118,8 +142,8 @@ export const PlaceList = styled.div`
    display: flex;
    overflow-x: auto;
    gap: 12px;
+   min-width: 0;
 
-   /* 기본 스크롤바 숨기기 (useHorizontalScroll 훅 사용 시 더 깔끔해 보임) */
    -ms-overflow-style: none;
    scrollbar-width: none;
    &::-webkit-scrollbar {
@@ -132,19 +156,9 @@ export const PlaceCard = styled.div`
    height: 105px;
    background-color: #f0f0f0;
    border-radius: 8px;
-   flex-shrink: 0; /* 아이템 크기가 줄어들지 않도록 설정 */
-
-   /* 카드 내 텍스트 스타일 (예시) */
+   flex-shrink: 0;
    display: flex;
    justify-content: center;
    align-items: center;
    font-size: 14px;
-`;
-
-export const DotIndicatorContainer = styled.div`
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   gap: 8px;
-   margin-top: 20px;
 `;

@@ -1,74 +1,59 @@
-import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import * as S from './EventDetailStyle';
-import { FaBookmark, FaRegBookmark } from 'react-icons/fa';
+import { FaBookmark, FaRegBookmark, FaMapMarkerAlt } from 'react-icons/fa';
 import Header from '../../components/Header/Header_ customer/Header_ customer';
-import { useHorizontalScroll } from '../../hooks/useHorizontalScroll'; // 1. 커스텀 훅 import
+import { useHorizontalScroll } from '../../hooks/useHorizontalScroll';
 
-const dummyEvents = [
-   {
-      id: 1,
-      title: '행사 1',
-      date: '2025/07/31~2025/09/25',
-      description: '자세한 내용. 지도 첨부파일이 있을시 보여주기.',
-   },
-   {
-      id: 2,
-      title: '행사 2',
-      date: '2025/08/15~2025/08/20',
-      description: '자세한 내용. 지도 첨부파일이 있을시 보여주기.',
-   },
-   {
-      id: 3,
-      title: '행사 3',
-      date: '2025/08/15~2025/08/20',
-      description: '자세한 내용. 지도 첨부파일이 있을시 보여주기.',
-   },
-   {
-      id: 4,
-      title: '행사 4',
-      date: '2025/08/15~2025/08/20',
-      description: '자세한 내용. 지도 첨부파일이 있을시 보여주기.',
-   },
-   {
-      id: 5,
-      title: '행사 5',
-      date: '2025/08/15~2025/08/20',
-      description: '자세한 내용. 지도 첨부파일이 있을시 보여주기.',
-   },
-   {
-      id: 6,
-      title: '행사 6',
-      date: '2025/08/15~2025/08/20',
-      description: '행사 2의 상세 내용입니다.',
-   },
-];
-const dummyRestaurants = [
+// --- Mock 데이터 정의 ---
+const mockEventDetail = {
+   eventId: 1,
+   eventName: '행사 1',
+   eventStartDate: '2025-07-31',
+   eventEndDate: '2025-09-25',
+   pictureUrl: null,
+   content:
+      '여기에 API에서 받아올 행사의 자세한 설명이 들어갑니다.\n\n여러 줄로 구성될 수 있으며, 실제 데이터처럼 보이도록 충분한 텍스트를 넣어 테스트합니다.',
+   addless: '서울특별시 구로구 연동로 320',
+};
+
+const mockRestaurants = [
    { id: 1, name: '맛집 1' },
    { id: 2, name: '맛집 2' },
    { id: 3, name: '맛집 3' },
    { id: 4, name: '맛집 4' },
    { id: 5, name: '맛집 5' },
    { id: 6, name: '맛집 6' },
-   { id: 7, name: '맛집 7' },
-   { id: 8, name: '맛집 8' },
 ];
 
 const EventDetail = () => {
-   // 2. 훅은 반드시 컴포넌트 함수 안 최상단에서 호출해야 합니다.
    const scrollRef = useHorizontalScroll();
+   const { id: eventId } = useParams();
 
-   const { id } = useParams();
-   const event = dummyEvents.find((e) => e.id === parseInt(id));
+   const [event, setEvent] = useState(null);
+   const [restaurants, setRestaurants] = useState([]);
+   const [loading, setLoading] = useState(true);
    const [isBookmarked, setIsBookmarked] = useState(false);
 
-   // Dot 인디케이터는 일단 시각적으로만 표시합니다.
-   const dots = Array.from({ length: Math.ceil(dummyRestaurants.length / 3) });
-   const [activeDotIndex, setActiveDotIndex] = useState(0);
+   useEffect(() => {
+      const fetchData = async () => {
+         setLoading(true);
+         try {
+            await new Promise((resolve) => setTimeout(resolve, 500)); // 가짜 로딩
+            setEvent(mockEventDetail);
+            setRestaurants(mockRestaurants);
+         } catch (error) {
+            console.error('데이터를 불러오는 데 실패했습니다.', error);
+         } finally {
+            setLoading(false);
+         }
+      };
 
-   if (!event) {
-      return <div>이벤트 정보를 찾을 수 없습니다.</div>;
-   }
+      fetchData();
+   }, [eventId]);
+
+   if (loading) return <div>로딩 중...</div>;
+   if (!event) return <div>이벤트 정보를 찾을 수 없습니다.</div>;
 
    return (
       <S.PageContainer>
@@ -79,10 +64,9 @@ const EventDetail = () => {
                <S.EventImagePlaceholder />
                <S.EventInfoWrapper>
                   <S.TitleWrapper>
-                     <S.EventTitle>{event.title}</S.EventTitle>
+                     <S.EventTitle>{event.eventName}</S.EventTitle>
                      <S.BookmarkWrapper
                         onClick={() => setIsBookmarked(!isBookmarked)}
-                        style={{ cursor: 'pointer' }}
                      >
                         {isBookmarked ? (
                            <FaBookmark size={24} color="#4daeff" />
@@ -91,40 +75,48 @@ const EventDetail = () => {
                         )}
                      </S.BookmarkWrapper>
                   </S.TitleWrapper>
-                  <S.EventDate>{event.date}</S.EventDate>
+                  <S.EventDate>
+                     {event.eventStartDate.replaceAll('-', '/')} ~{' '}
+                     {event.eventEndDate.replaceAll('-', '/')}
+                  </S.EventDate>
                </S.EventInfoWrapper>
             </S.EventHeaderContainer>
 
             {/* 중간 콘텐츠 섹션 */}
             <S.ContentSection>
-               <S.DescriptionText>
-                  {event.description}
-                  <br />
-                  지도 첨부파일이 있을시 보여주기.
-               </S.DescriptionText>
-               <S.FindRoute>+ 주소, 주차장, 대중교통 이용안내</S.FindRoute>
+               <S.DescriptionText>{event.content}</S.DescriptionText>
             </S.ContentSection>
 
-            <S.Divider />
+            {/* 주소 상세 정보 */}
+            <S.AddressInfoBox>
+               <S.AddressTitle>
+                  <FaMapMarkerAlt /> 주소 및 안내
+               </S.AddressTitle>
+               <p>
+                  <strong>주소:</strong> {event.addless}
+               </p>
+               <p>
+                  <strong>주차:</strong> 주차 정보는 없습니다.
+               </p>
+               <p>
+                  <strong>대중교통:</strong> 대중교통 정보는 없습니다.
+               </p>
+            </S.AddressInfoBox>
 
-            {/* 하단 '근처 맛집' 섹션 */}
+            <S.Divider />
+         </S.ContentWrapper>
+
+         {/* 하단 고정 영역 */}
+         <S.FixedBottomWrapper>
             <S.NearbySection>
                <S.SectionTitle>근처 맛집</S.SectionTitle>
-
-               {/* 3. 훅이 반환한 ref를 스크롤할 요소에 연결합니다. */}
                <S.PlaceList ref={scrollRef}>
-                  {dummyRestaurants.map((restaurant) => (
-                     <Link
-                        to={`/store/${restaurant.id}`}
-                        key={restaurant.id}
-                        style={{ textDecoration: 'none' }}
-                     >
-                        <S.PlaceCard>{restaurant.name}</S.PlaceCard>
-                     </Link>
+                  {restaurants.map((store) => (
+                     <S.PlaceCard key={store.id}>{store.name}</S.PlaceCard>
                   ))}
                </S.PlaceList>
             </S.NearbySection>
-         </S.ContentWrapper>
+         </S.FixedBottomWrapper>
       </S.PageContainer>
    );
 };
